@@ -15,25 +15,22 @@
           <th>Image name</th>
           <th>latitude</th>
           <th>longitude</th>
+          <th>map</th>
         </tr>
         {%for img in db_data%}
-    
+        <tr>
         <td>{{img.file_location}}</td>
         <td>{{img.latitude}}</td>
         <td>{{img.latitude}}</td>
-            
+        <td><div id="{{img.ID}}" style="width: 600px; height: 400px; float:left"></div></td>
+        </tr>
           
        {%endfor%}
         
       </table>
 
 
-    {% for map in db_data%}
-    <h1>{{map.ID}}</h1>
-    <div id="{{map.ID}}" style="width: 600px; height: 400px; float:left"></div>
-    {% endfor %}
-   
-    
+
     
     <script>
         const dataConsumed= {{data}};
