@@ -1,14 +1,26 @@
 <html>
+
   <head>
     <title>Image Upload and Map</title>
     <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
     <h1>Image Upload and Map</h1>
+
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-      <input type="file" name="file">
-      <input type="submit" value="Upload">
-    </form>
+      <input type="file"  name="file">
+      <br>
+      <br>
+      <input type="submit" class="btn btn-secondary btn-lg active" value="Upload">
+      
+  </form>
+  <br>
+      <h1>{{data}}</h1>
+    <br>
+    <h1><a href="/data" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Show uploaded images data</a></h1>
+      <br>
+    
     {% if static_map %}
     <div>
       <img src="{{ static_map }}" alt="Map">

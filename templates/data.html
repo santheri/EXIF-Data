@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <title>Image Upload and Map</title>
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+  </head>
+  <body>
+    <table id="registration-table">
+        <tr>
+          <th>Image name</th>
+          <th>latitude</th>
+          <th>longitude</th>
+        </tr>
+        {%for img in db_data%}
+    
+        <td>{{img.file_location}}</td>
+        <td>{{img.latitude}}</td>
+        <td>{{img.latitude}}</td>
+            
+          
+       {%endfor%}
+        
+      </table>
+
+
+    {% for map in db_data%}
+    <h1>{{map.ID}}</h1>
+    <div id="{{map.ID}}" style="width: 600px; height: 400px; float:left"></div>
+    {% endfor %}
+   
+    
+    
+    <script>
+        const dataConsumed= {{data}};
+        console.log(dataConsumed.length);
+        for(let i=1;i<=dataConsumed.length;i++){
+            var map = L.map('map' + i).setView(dataConsumed[i], 13);    
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+           
+        }
+    </script>
+  </body>
+</html>

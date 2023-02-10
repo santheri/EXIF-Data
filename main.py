@@ -1,10 +1,27 @@
 from flask import Flask, render_template, request, redirect, url_for
-# from PIL import Image
+from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
 from exif import Image
-import exifread
-import requests
+import os
 
 app = Flask(__name__)
+db = SQLAlchemy()
+#configure the SQLite database, relative to the app instance folder
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///exif_data.db"
+db.init_app(app)
+
+
+dir=os.getcwd()
+
+class Uploaded_images(db.Model):
+    __tablename__="uploaded_images"
+    ID=db.Column(db.Integer,primary_key=True)
+    file_location=db.Column(db.String,unique=True,nullable=False)
+    latitude=db.Column(db.String,unique=False,nullable=False)
+    longitude=db.Column(db.String,unique=False,nullable=False)
+    
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -37,30 +54,42 @@ def image_coordinates(image_path):
 def upload():
     if request.method == 'POST':
         file = request.files['file']
-        coords=image_coordinates(r"E:\Uploading Images\static\images\IMG_20230210_172110081.jpg")
-        print(coords)
-        lat = coords[0]
-        lng = coords[1]
+        file_name=file.filename
+        print(file.filename)
+        file_location=os.path.join(dir,"static","images",file.filename)
+        file.save(file_location)  
         
-        # Format the latitude and longitude as decimal degrees
-        if lat and lng:
-            static_map_url = f'https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C{lat},{lng}&key=YOUR_API_KEY'
-            response = requests.get(static_map_url)
+        # coords=image_coordinates(r"E:\EMAIL\EXIF-Data-master\static\images\WIN_20221204_14_17_14_Pro.jpg")
+        try:
+            coords=image_coordinates(file_location)
+        except:
+            return render_template("index.html",data="location data not found") 
+        try:
             
-            # Save the static map image to a file
-            with open('static_map.png', 'wb') as f:
-                f.write(response.content)
+            img=Uploaded_images(file_location=file_name,latitude=coords[0],longitude=coords[1])
+            db.session.add(img)
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            return render_template("index.html",data="file already exists")
+        print(coords)
+               
+        
+        
         
         # Redirect to the home page to display the uploaded image and its location map
-        return render_template("xx.html",data=coords)
+        return render_template("index.html",data="file uploaded successfully")
+        # return render_template("xx.html",data=coords)
 
-def convert_to_degrees(value):
-    # Convert the EXIF GPS data to decimal degrees
-    d = float(value.values[0].num) / float(value.values[0].den)
-    m = float(value.values[1].num) / float(value.values[1].den)
-    s = float(value.values[2].num) / float(value.values[2].den)
-    
-    return d + (m / 60.0) + (s / 3600.0)
+@app.route("/data")
+def data():
+     data=Uploaded_images.query.all()
+     for i in data:
+         i.ID="map"+str(i.ID)
+     lat_long=[]
+     for i in data:
+         lat_long.append([float(i.latitude),float(i.longitude)])
+     print(lat_long)
+     return render_template("data.html",data=lat_long,db_data=data)
 
 if __name__ == '__main__':
     app.run(debug=True)
