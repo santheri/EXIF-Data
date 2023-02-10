@@ -16,14 +16,17 @@
           <th>latitude</th>
           <th>longitude</th>
           <th>map</th>
+          <th>image</th>
         </tr>
         {%for img in db_data%}
         <tr>
         <td>{{img.file_location}}</td>
         <td>{{img.latitude}}</td>
         <td>{{img.latitude}}</td>
-        <td><div id="{{img.ID}}" style="width: 600px; height: 400px; float:left"></div></td>
-        </tr>
+        <td><div id="{{img.ID}}" style="width: 300px; height: 200px; float:left"></div></td>
+        <td><img src="./static/images/{{img.file_location}}" alt="User Image" style="width: 300px; height: 200px;"></td>
+        
+      </tr>
           
        {%endfor%}
         
