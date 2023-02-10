@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Image Upload and Map</title>
+    <link rel="stylesheet" href="static/css/style.css">
+  </head>
+  <body>
+    <h1>Image Upload and Map</h1>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+      <input type="file" name="file">
+      <input type="submit" value="Upload">
+    </form>
+    {% if static_map %}
+    <div>
+      <img src="{{ static_map }}" alt="Map">
+    </div>
+    {% endif %}
+  </body>
+</html>
+
